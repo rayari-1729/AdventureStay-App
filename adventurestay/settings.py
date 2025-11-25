@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -128,7 +132,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # AWS / Cloud configuration
 USE_AWS = os.getenv("USE_AWS", "0") == "1"
-AWS_REGION = os.getenv("AWS_REGION", "ap-south-1")
+AWS_REGION = os.getenv("AWS_DEFAULT_REGION", os.getenv("AWS_REGION", "ap-south-1"))
 DDB_BOOKINGS_TABLE_NAME = os.getenv("DDB_BOOKINGS_TABLE_NAME", "")
 DDB_PACKAGES_TABLE_NAME = os.getenv("DDB_PACKAGES_TABLE_NAME", "")
 S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME", "")
