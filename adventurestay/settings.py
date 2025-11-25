@@ -30,7 +30,17 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-change-me")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "1") == "1"
 
-ALLOWED_HOSTS = [host for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if host]
+# ALLOWED_HOSTS = [host for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if host]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "0.0.0.0",
+    "4bc03b3b97474215bce2c89b5327e9e4.vfs.cloud9.us-east-1.amazonaws.com",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://4bc03b3b97474215bce2c89b5327e9e4.vfs.cloud9.us-east-1.amazonaws.com",
+]
 
 
 # Application definition

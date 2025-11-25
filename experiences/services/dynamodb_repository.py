@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any, Dict, List
+from decimal import Decimal 
 
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
@@ -27,6 +28,19 @@ def get_dynamodb_client():
 
 
 def _serialize_booking(booking: AdventureBookingModel) -> Dict[str, Any]:
+    from decimal import Decimal  # or use the top-level import
+
+    total_price = booking.total_price
+
+    # Ensure total_price is Decimal for DynamoDB
+    if total_price is None:
+        price_decimal = Decimal("0")
+    elif isinstance(total_price, Decimal):
+        price_decimal = total_price
+    else:
+        # Covers float, str, etc.
+        price_decimal = Decimal(str(total_price))
+
     return {
         "booking_id": str(booking.id),
         "package_code": booking.package.package_code,
@@ -34,8 +48,8 @@ def _serialize_booking(booking: AdventureBookingModel) -> Dict[str, Any]:
         "category": booking.package.category,
         "start_date": booking.start_date.isoformat(),
         "end_date": booking.end_date.isoformat(),
-        "num_guests": booking.num_guests,
-        "total_price": float(booking.total_price),
+        "num_guests": booking.num_guests,  # int is fine
+        "total_price": price_decimal,
         "created_at": booking.created_at.isoformat(),
     }
 
