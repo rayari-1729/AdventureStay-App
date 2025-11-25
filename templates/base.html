@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>AdventureStay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --primary: #0b3954;
+      --accent: #ffce67;
+      --muted: #7a8899;
+      --bg: #f1f5f9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: #0f172a;
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(120deg, #0b3954, #1f6f8b);
+      color: #fff;
+      padding: 1.25rem 3vw;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
+    }
+    header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+    nav a {
+      color: #fff;
+      margin-left: 1.25rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+    nav a:hover { opacity: 0.8; }
+    main {
+      padding: 3rem 3vw 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .hero {
+      background: #fff;
+      border-radius: 18px;
+      padding: 3rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255,206,103,0.3), transparent 60%);
+      pointer-events: none;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 1.75rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #1b1b1b;
+      font-weight: 700;
+      text-decoration: none;
+      margin-top: 1rem;
+      box-shadow: 0 10px 20px rgba(255, 206, 103, 0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(255, 206, 103, 0.5);
+    }
+    .category-nav {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .category-pill {
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      font-weight: 600;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .section-header {
+      margin-top: 3rem;
+      margin-bottom: 1.25rem;
+    }
+    .section-header h2 {
+      margin: 0;
+      font-size: 1.75rem;
+      color: var(--primary);
+    }
+    .section-header p {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+    }
+    .card-grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 35px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .card-content {
+      padding: 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-content h3 { margin: 0 0 0.4rem; }
+    .card-content p { margin: 0.15rem 0; }
+    form .field-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    form label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--primary);
+    }
+    form input {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: 1px solid #d9e2ec;
+      font-size: 1rem;
+    }
+    .field-error {
+      margin-top: 0.35rem;
+      color: #c53030;
+      font-size: 0.9rem;
+    }
+    .alert {
+      background: #ffe2e2;
+      color: #a11a1a;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      box-shadow: 0 10px 25px rgba(161, 26, 26, 0.15);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AdventureStay</h1>
+    <nav>
+      <a href="{% url 'experiences:home' %}">Home</a>
+      <a href="{% url 'experiences:package_list' %}">Adventure Packages</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

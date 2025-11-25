@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h2>Adventure confirmed for {{ booking.guest_name }}!</h2>
+  <p>We emailed the itinerary to {{ booking.guest_email }}.</p>
+  <p>{{ itinerary }}</p>
+  <p>
+    <a class="btn" href="{% url 'experiences:package_list' %}">Discover more stays</a>
+  </p>
+</section>
+{% endblock %}

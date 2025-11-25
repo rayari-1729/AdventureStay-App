@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<!-- Import homepage-specific styles -->
+<link rel="stylesheet" href="{% static 'experiences/styles.css' %}">
+
+<!-- Hero section with premium gradient + background imagery -->
+<section class="home-hero">
+  <div class="home-hero__content">
+    <p class="eyebrow">AdventureStay Collection</p>
+    <h1>Stay, trek, and explore the wild the premium way.</h1>
+    <p>
+      Escape to Himalayan ridge lines, misty tea estates, immersive jungle safaris, and rustic eco-lodges—
+      all vetted, availability-aware, and priced in real time through our adventurestay-utils engine.
+    </p>
+    <div class="hero-actions">
+      <a href="{% url 'experiences:package_list' %}" class="btn btn-premium">Browse &amp; Book Adventures</a>
+      <span class="status-pill">Cloud Integrations: {{ aws_enabled|yesno:"Enabled,Disabled" }}</span>
+    </div>
+  </div>
+  <div class="home-hero__visual" role="presentation"></div>
+</section>
+
+<!-- Category cards -->
+<section class="home-section">
+  <div class="section-heading">
+    <h2>Choose your canvas</h2>
+    <p>Every category features five top packages curated for instant inspiration.</p>
+  </div>
+  <div class="card-grid category-grid">
+    <article class="category-card">
+      <h3>Trekking</h3>
+      <p>High-altitude itineraries with mountain-certified guides plus alpine camps.</p>
+      <a href="{% url 'experiences:package_list' %}#trekking" class="card-link">View trekking trails →</a>
+    </article>
+    <article class="category-card">
+      <h3>Hills Staycation</h3>
+      <p>Boutique chalets, tea estates, and bonfire-ready hideaways for slow travel.</p>
+      <a href="{% url 'experiences:package_list' %}#hills_staycation" class="card-link">View hill stays →</a>
+    </article>
+    <article class="category-card">
+      <h3>Jungle Safari</h3>
+      <p>Reserve-ready expeditions with licensed naturalists and custom jeep slots.</p>
+      <a href="{% url 'experiences:package_list' %}#jungle_safari" class="card-link">View safaris →</a>
+    </article>
+    <article class="category-card">
+      <h3>Rustic Lodging</h3>
+      <p>Clay homestays, desert camps, and forest lodges curated for mindful stays.</p>
+      <a href="{% url 'experiences:package_list' %}#lodging" class="card-link">View rustic stays →</a>
+    </article>
+  </div>
+</section>
+
+<!-- Why choose AdventureStay section -->
+<section class="home-section">
+  <div class="section-heading">
+    <h2>Why Choose AdventureStay?</h2>
+    <p>Built for cloud-native operations without compromising on the experience.</p>
+  </div>
+  <div class="card-grid highlight-grid">
+    <article class="highlight-card">
+      <h3>Real-time availability</h3>
+      <p>PackageAvailabilityChecker ensures overlapping bookings never slip through.</p>
+    </article>
+    <article class="highlight-card">
+      <h3>Smart pricing engine</h3>
+      <p>Weekend surcharges and seasonal multipliers baked into every quote.</p>
+    </article>
+    <article class="highlight-card">
+      <h3>AWS-ready workflows</h3>
+      <p>DynamoDB, SQS, and SNS hooks fire post-booking without blocking the UI.</p>
+    </article>
+    <article class="highlight-card">
+      <h3>Curated adventure packages</h3>
+      <p>20+ handcrafted stays seeded with vivid imagery and domain metadata.</p>
+    </article>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="home-footer">
+  <p>&copy; {% now "Y" %} AdventureStay. All rights reserved.</p>
+  <p>Cloud Integrations: <strong>{{ aws_enabled|yesno:"Enabled,Disabled" }}</strong></p>
+  <p>Need help? <a href="mailto:hello@adventurestay.example.com">Contact Support</a></p>
+</footer>
+{% endblock %}

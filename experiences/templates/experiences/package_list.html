@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero" style="margin-bottom:2rem;">
+  <h2>Pick an adventure lane</h2>
+  <p>Each category highlights five signature stays. Tap any card for booking details, live availability, and pricing.</p>
+</section>
+
+{% for section in sections %}
+  <div id="{{ section.key }}" class="section-header">
+    <h2>{{ section.label }}</h2>
+    <p>{{ section.description }}</p>
+  </div>
+  <div class="card-grid">
+    {% for package in section.packages %}
+      <div class="card">
+        {% if package.image %}
+          <img src="{{ package.image }}" alt="{{ package.obj.name }}">
+        {% endif %}
+        <div class="card-content">
+          <h3>{{ package.obj.name }}</h3>
+          <p>{{ package.obj.location }}</p>
+          <p>{{ package.pricing }}</p>
+          <p>Guests: up to {{ package.obj.max_guests }} · Nights: {{ package.obj.min_nights }}-{{ package.obj.max_nights }}</p>
+          <a class="btn" href="{% url 'experiences:booking_form' package.obj.package_code %}">Book {{ section.label }}</a>
+        </div>
+      </div>
+    {% empty %}
+      <p style="grid-column:1/-1;">Add packages for this category to start booking.</p>
+    {% endfor %}
+  </div>
+{% endfor %}
+{% endblock %}

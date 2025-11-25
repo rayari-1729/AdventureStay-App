@@ -1,0 +1,149 @@
+/* AdventureStay home page premium experience */
+
+.home-hero {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 3rem;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(11, 57, 84, 0.95), rgba(31, 111, 139, 0.9));
+  color: #f8fafc;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
+}
+
+.home-hero__content h1 {
+  font-size: clamp(2rem, 3vw, 3rem);
+  margin-bottom: 1rem;
+}
+
+.home-hero__content p {
+  color: rgba(248, 250, 252, 0.85);
+  margin-bottom: 1rem;
+}
+
+.home-hero__content .eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.home-hero__visual {
+  border-radius: 20px;
+  min-height: 280px;
+  background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+    url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80")
+      center/cover no-repeat;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.btn-premium {
+  background: linear-gradient(135deg, #ffce67, #ffd88f);
+  color: #1f2933;
+}
+
+.status-pill {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+}
+
+.home-section {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-top: 2.5rem;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
+}
+
+.section-heading {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.section-heading h2 {
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  color: #0b3954;
+}
+
+.category-grid .category-card,
+.highlight-grid .highlight-card {
+  border-radius: 16px;
+  padding: 1.5rem;
+  background: #f8fafc;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.category-card h3,
+.highlight-card h3 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.category-card p,
+.highlight-card p {
+  margin: 0;
+  color: #475569;
+}
+
+.card-link {
+  margin-top: auto;
+  font-weight: 600;
+  color: #0b3954;
+  text-decoration: none;
+}
+
+.card-link:hover {
+  text-decoration: underline;
+}
+
+.home-footer {
+  margin-top: 3rem;
+  text-align: center;
+  padding: 2rem 1rem;
+  border-radius: 20px;
+  background: #0b3954;
+  color: #f8fafc;
+  box-shadow: 0 20px 40px rgba(11, 57, 84, 0.3);
+}
+
+.home-footer a {
+  color: #ffce67;
+  text-decoration: none;
+}
+
+.home-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .home-hero {
+    padding: 2rem;
+  }
+
+  .home-section {
+    padding: 2rem 1.5rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .status-pill {
+    width: 100%;
+    text-align: center;
+  }
+}
