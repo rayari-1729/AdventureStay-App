@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from decimal import Decimal
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -13,6 +14,9 @@ from .models import AdventureBookingModel, AdventurePackageModel
 from .services import aws_enabled
 from .services import aws_sqs, aws_sns, dynamodb_repository
 from .services.aws_s3 import get_package_image_url
+
+
+logger = logging.getLogger(__name__)
 
 
 CATEGORY_DESCRIPTIONS = {
@@ -97,9 +101,21 @@ def booking_form(request, package_code: str):
                 "total_price": float(booking.total_price),
                 "itinerary": build_itinerary_summary(to_domain_booking(booking)),
             }
-            dynamodb_repository.save_booking_to_dynamodb(booking_payload)
-            aws_sqs.send_booking_created_message(booking_payload)
-            aws_sns.publish_booking_confirmation(booking_payload)
+            try:
+                dynamodb_repository.save_booking_to_dynamodb(booking)
+            except Exception:  # pragma: no cover - log unexpected runtime issues
+                logger.exception("Failed to persist booking %s to DynamoDB.", booking.id)
+
+            try:
+                aws_sqs.send_booking_created_message(booking)
+            except Exception:  # pragma: no cover
+                logger.exception("Failed to send booking %s to SQS.", booking.id)
+
+            try:
+                aws_sns.publish_booking_confirmation(booking)
+            except Exception:  # pragma: no cover
+                logger.exception("Failed to publish booking %s to SNS.", booking.id)
+
             return redirect("experiences:booking_success", booking_id=booking.id)
     else:
         form = BookingForm(package)

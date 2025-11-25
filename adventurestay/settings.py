@@ -130,6 +130,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 USE_AWS = os.getenv("USE_AWS", "0") == "1"
 AWS_REGION = os.getenv("AWS_REGION", "ap-south-1")
 DDB_BOOKINGS_TABLE_NAME = os.getenv("DDB_BOOKINGS_TABLE_NAME", "")
+DDB_PACKAGES_TABLE_NAME = os.getenv("DDB_PACKAGES_TABLE_NAME", "")
 S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME", "")
 SQS_BOOKING_QUEUE_URL = os.getenv("SQS_BOOKING_QUEUE_URL", "")
 SNS_BOOKING_TOPIC_ARN = os.getenv("SNS_BOOKING_TOPIC_ARN", "")

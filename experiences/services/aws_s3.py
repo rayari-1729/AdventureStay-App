@@ -2,19 +2,38 @@
 
 from __future__ import annotations
 
+import boto3
 from django.conf import settings
 
 from . import aws_enabled, log_local_fallback
 
 
+def get_s3_client():
+    if not aws_enabled():
+        log_local_fallback("s3")
+        return None
+
+    region = getattr(settings, "AWS_REGION", None)
+    return boto3.client("s3", region_name=region)
+
+
+def build_package_image_url(package_code: str) -> str:
+    bucket = getattr(settings, "S3_BUCKET_NAME", "")
+    region = getattr(settings, "AWS_REGION", "ap-south-1")
+    if not bucket:
+        return ""
+    return f"https://{bucket}.s3.{region}.amazonaws.com/packages/{package_code}.jpg"
+
+
 def get_package_image_url(package_code: str) -> str | None:
     """Return an S3 image URL if AWS is enabled and configured."""
 
-    bucket = getattr(settings, "S3_BUCKET_NAME", "")
-    region = getattr(settings, "AWS_REGION", "ap-south-1")
-
-    if not aws_enabled() or not bucket:
+    if not aws_enabled():
         log_local_fallback("s3", {"package_code": package_code})
         return None
 
-    return f"https://{bucket}.s3.{region}.amazonaws.com/packages/{package_code}.jpg"
+    url = build_package_image_url(package_code)
+    if not url:
+        log_local_fallback("s3", {"package_code": package_code})
+        return None
+    return url

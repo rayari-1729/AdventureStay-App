@@ -37,6 +37,7 @@ AdventureStay is a Django 5 web application that showcases curated adventure sta
 | `USE_AWS` | Enable AWS clients when set to `1` (defaults to `0`) |
 | `AWS_REGION` | Region for all AWS clients (default `ap-south-1`) |
 | `DDB_BOOKINGS_TABLE_NAME` | DynamoDB table for persisting bookings |
+| `DDB_PACKAGES_TABLE_NAME` | DynamoDB table for packages (future expansion) |
 | `S3_BUCKET_NAME` | Bucket used to build package image URLs |
 | `SQS_BOOKING_QUEUE_URL` | Queue for booking-created events |
 | `SNS_BOOKING_TOPIC_ARN` | Topic used to send booking confirmations |
@@ -53,8 +54,18 @@ The project uses `pytest` + `pytest-django`.
 python -m pytest
 ```
 
+## AWS Verification
+
+Use the built-in management command to manually exercise the AWS pipeline (creates a sample booking and triggers DynamoDB/SQS/SNS):
+
+```bash
+python manage.py verify_aws_booking_pipeline
+```
+
+The command is safe to run locally (it respects `USE_AWS`) and is handy for Cloud9/EC2 smoke tests once environment variables are configured.
+
 ## Deployment Notes
 
-- The project is cloud-ready: set `USE_AWS=1` and configure necessary tables, queues, and topics.
+- The project is cloud-ready: set `USE_AWS=1` and configure the DynamoDB table, SQS queue, SNS topic, and S3 bucket listed above (IAM role permissions required).
 - `requirements.txt` references the released PyPI name `adventurestay-utils` so containers or CI pipelines can install the shared logic cleanly.
 - Templates intentionally lightweight; front-end teams can enhance them without touching the core booking flow.
