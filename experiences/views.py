@@ -6,14 +6,14 @@ import logging
 from decimal import Decimal
 
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import Http404
 
 from adventurestay_utils import build_itinerary_summary
 
 from .forms import BookingForm, to_domain_booking
 from .models import AdventureBookingModel, AdventurePackageModel
 from .services import aws_enabled
-from .services import aws_sqs, aws_sns, dynamodb_repository
-from .services.aws_s3 import get_package_image_url
+from .services import aws_sqs, aws_sns, dynamodb_repository, packages_repository
 
 
 logger = logging.getLogger(__name__)
@@ -40,24 +40,18 @@ def home(request):
 
 def package_list(request):
     sections = []
+    all_packages = packages_repository.get_all_packages()
     for key, label in AdventurePackageModel.CATEGORY_CHOICES:
-        packages = (
-            AdventurePackageModel.objects.filter(category=key, is_active=True)
-            .order_by("name")[:5]
-        )
         cards = []
-        for package in packages:
-            price = package.base_price_per_night or package.base_price_per_person or Decimal("0")
+        category_packages = [pkg for pkg in all_packages if pkg.get("category") == key][:5]
+        for package in category_packages:
+            price = package.get("base_price_per_night") or package.get("base_price_per_person") or Decimal("0")
             pricing_text = (
-                f"From ₹{price} / night" if package.base_price_per_night else f"From ₹{price} / person"
+                f"From Rs {price} / night"
+                if package.get("base_price_per_night")
+                else f"From Rs {price} / person"
             )
-            cards.append(
-                {
-                    "obj": package,
-                    "image": package.image_url or get_package_image_url(package.package_code),
-                    "pricing": pricing_text,
-                }
-            )
+            cards.append({"package": package, "pricing": pricing_text})
         sections.append(
             {
                 "key": key.lower(),
@@ -75,7 +69,11 @@ def package_list(request):
 
 
 def booking_form(request, package_code: str):
-    package = get_object_or_404(AdventurePackageModel, package_code=package_code)
+    package_info = packages_repository.get_package_by_code(package_code)
+    if not package_info:
+        raise Http404("Package not found")
+
+    package = packages_repository.ensure_package_model(package_info)
 
     if request.method == "POST":
         form = BookingForm(package, request.POST)
@@ -103,17 +101,17 @@ def booking_form(request, package_code: str):
             }
             try:
                 dynamodb_repository.save_booking_to_dynamodb(booking)
-            except Exception:  # pragma: no cover - log unexpected runtime issues
+            except Exception:
                 logger.exception("Failed to persist booking %s to DynamoDB.", booking.id)
 
             try:
                 aws_sqs.send_booking_created_message(booking)
-            except Exception:  # pragma: no cover
+            except Exception:
                 logger.exception("Failed to send booking %s to SQS.", booking.id)
 
             try:
                 aws_sns.publish_booking_confirmation(booking)
-            except Exception:  # pragma: no cover
+            except Exception:
                 logger.exception("Failed to publish booking %s to SNS.", booking.id)
 
             return redirect("experiences:booking_success", booking_id=booking.id)
@@ -125,6 +123,7 @@ def booking_form(request, package_code: str):
         "experiences/booking_form.html",
         {
             "package": package,
+            "package_info": package_info,
             "form": form,
             "quote": form.total_price,
         },

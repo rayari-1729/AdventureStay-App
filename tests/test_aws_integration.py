@@ -4,7 +4,8 @@ from unittest import mock
 import pytest
 
 from experiences.models import AdventurePackageModel, AdventureBookingModel
-from experiences.services import aws_sns, aws_sqs, dynamodb_repository
+from experiences.services import aws_sns, aws_sqs, dynamodb_repository, packages_repository
+from experiences.services.aws_s3 import resolve_image_url
 
 
 @pytest.fixture
@@ -63,3 +64,52 @@ def test_sns_publishes_message_when_enabled(mock_client, settings, sample_bookin
     settings.SNS_BOOKING_TOPIC_ARN = "arn:aws:sns:region:acct:topic"
     aws_sns.publish_booking_confirmation(sample_booking)
     mock_client.return_value.publish.assert_called_once()
+
+
+@mock.patch("experiences.services.packages_repository._should_use_dynamodb", return_value=True)
+@mock.patch("experiences.services.packages_repository.dynamodb_repository.list_packages_from_dynamodb")
+def test_get_all_packages_reads_from_dynamodb(mock_list, mock_flag):
+    expected = [{"package_code": "DYN-1"}]
+    mock_list.return_value = expected
+    result = packages_repository.get_all_packages()
+    assert result == expected
+    mock_list.assert_called_once()
+
+
+@pytest.mark.django_db
+def test_get_all_packages_fallbacks_to_db(settings):
+    settings.USE_AWS = False
+    pkg = AdventurePackageModel.objects.create(
+        package_code="LOCAL-1",
+        category=AdventurePackageModel.LODGING,
+        name="Local Lodge",
+        location="Fallback",
+        base_price_per_night=99,
+        max_guests=4,
+        min_nights=1,
+        max_nights=3,
+        includes_meals=False,
+        includes_guide=False,
+    )
+    packages = packages_repository.get_all_packages()
+    assert any(p["package_code"] == pkg.package_code for p in packages)
+
+
+@mock.patch("experiences.services.packages_repository._should_use_dynamodb", return_value=True)
+@mock.patch("experiences.services.packages_repository.dynamodb_repository.get_package_from_dynamodb")
+def test_get_package_by_code_dynamodb(mock_get, mock_flag):
+    mock_get.return_value = {"package_code": "DYN-2"}
+    result = packages_repository.get_package_by_code("DYN-2")
+    assert result["package_code"] == "DYN-2"
+
+
+def test_resolve_image_url_passthrough():
+    url = "https://example.com/image.jpg"
+    assert resolve_image_url(url) == url
+
+
+def test_resolve_image_url_for_s3_key(settings):
+    settings.S3_BUCKET_NAME = "adventurestay-images"
+    settings.AWS_REGION = "ap-south-1"
+    result = resolve_image_url("gallery/photo.jpg")
+    assert result == "https://adventurestay-images.s3.ap-south-1.amazonaws.com/gallery/photo.jpg"

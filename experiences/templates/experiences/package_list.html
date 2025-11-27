@@ -11,19 +11,21 @@
     <p>{{ section.description }}</p>
   </div>
   <div class="card-grid">
-    {% for package in section.packages %}
-      <div class="card">
-        {% if package.image %}
-          <img src="{{ package.image }}" alt="{{ package.obj.name }}">
-        {% endif %}
-        <div class="card-content">
-          <h3>{{ package.obj.name }}</h3>
-          <p>{{ package.obj.location }}</p>
-          <p>{{ package.pricing }}</p>
-          <p>Guests: up to {{ package.obj.max_guests }} · Nights: {{ package.obj.min_nights }}-{{ package.obj.max_nights }}</p>
-          <a class="btn" href="{% url 'experiences:booking_form' package.obj.package_code %}">Book {{ section.label }}</a>
+    {% for card in section.packages %}
+      {% with package=card.package %}
+        <div class="card">
+          {% if package.image_url %}
+            <img src="{{ package.image_url }}" alt="{{ package.name }}">
+          {% endif %}
+          <div class="card-content">
+            <h3>{{ package.name }}</h3>
+            <p>{{ package.location }}</p>
+            <p>{{ card.pricing }}</p>
+            <p>Guests: up to {{ package.max_guests }} · Nights: {{ package.min_nights }}-{{ package.max_nights }}</p>
+            <a class="btn" href="{% url 'experiences:booking_form' package.package_code %}">Book {{ section.label }}</a>
+          </div>
         </div>
-      </div>
+      {% endwith %}
     {% empty %}
       <p style="grid-column:1/-1;">Add packages for this category to start booking.</p>
     {% endfor %}

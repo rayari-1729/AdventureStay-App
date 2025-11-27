@@ -25,6 +25,25 @@ def build_package_image_url(package_code: str) -> str:
     return f"https://{bucket}.s3.{region}.amazonaws.com/packages/{package_code}.jpg"
 
 
+def resolve_image_url(image_url_or_key: str | None) -> str:
+    """Return a usable image URL based on a stored URL or S3 object key."""
+
+    if not image_url_or_key:
+        return ""
+
+    normalized = image_url_or_key.strip()
+    if normalized.startswith("http://") or normalized.startswith("https://"):
+        return normalized
+
+    bucket = getattr(settings, "S3_BUCKET_NAME", "")
+    region = getattr(settings, "AWS_REGION", "ap-south-1")
+    if not bucket:
+        log_local_fallback("s3", {"image_key": normalized})
+        return normalized
+
+    return f"https://{bucket}.s3.{region}.amazonaws.com/{normalized.lstrip('/')}"
+
+
 def get_package_image_url(package_code: str) -> str | None:
     """Return an S3 image URL if AWS is enabled and configured."""
 
