@@ -2,8 +2,8 @@
 {% block content %}
 <section class="hero" style="margin-bottom:2rem;">
   <h2>{{ package_info.name }}</h2>
-  <p>{{ package_info.location }} · {{ package_info.category|title }}</p>
-  <p>Includes meals: {{ package_info.includes_meals|yesno:"Yes,No" }} · Guide: {{ package_info.includes_guide|yesno:"Yes,No" }}</p>
+  <p>{{ package_info.location }} Â· {{ package_info.category|title }}</p>
+  <p>Includes meals: {{ package_info.includes_meals|yesno:"Yes,No" }} Â· Guide: {{ package_info.includes_guide|yesno:"Yes,No" }}</p>
   {% if quote %}
     <p style="font-size:1.4rem;font-weight:700;">Latest quote: Rs {{ quote }}</p>
   {% endif %}

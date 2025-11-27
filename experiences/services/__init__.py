@@ -20,3 +20,4 @@ def log_local_fallback(service_name: str, extra: Dict[str, Any] | None = None) -
     """Log a message describing why a cloud call was skipped."""
 
     logger.info("%s skipped (local fallback). Details: %s", service_name, extra or {})
+

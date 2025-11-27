@@ -101,3 +101,18 @@ def _price_to_number(value):
         return float(value)
     except (TypeError, ValueError):
         return None
+
+
+def update_package_image_url(package_code: str, new_url: str) -> None:
+    """Persist updated image URL to DynamoDB when AWS mode is active."""
+
+    if not _should_use_dynamodb():
+        return
+    table = dynamodb_repository._package_table()  # use existing helper
+    if not table:
+        return
+    table.update_item(
+        Key={"package_id": package_code},
+        UpdateExpression="SET image_url = :url",
+        ExpressionAttributeValues={":url": new_url},
+    )

@@ -44,6 +44,21 @@ def resolve_image_url(image_url_or_key: str | None) -> str:
     return f"https://{bucket}.s3.{region}.amazonaws.com/{normalized.lstrip('/')}"
 
 
+def upload_package_image(image_bytes: bytes, filename: str) -> str:
+    """Upload image bytes to S3 under packages/ and return the public URL."""
+
+    client = get_s3_client()
+    bucket = getattr(settings, "S3_BUCKET_NAME", "")
+    if not client or not bucket:
+        log_local_fallback("s3-upload", {"filename": filename})
+        raise RuntimeError("S3 upload unavailable.")
+
+    key = f"packages/{filename}"
+    client.put_object(Bucket=bucket, Key=key, Body=image_bytes, ContentType="image/jpeg")
+    region = getattr(settings, "AWS_REGION", "ap-south-1")
+    return f"https://{bucket}.s3.{region}.amazonaws.com/{key}"
+
+
 def get_package_image_url(package_code: str) -> str | None:
     """Return an S3 image URL if AWS is enabled and configured."""
 
