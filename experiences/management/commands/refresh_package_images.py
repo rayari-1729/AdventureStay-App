@@ -27,10 +27,13 @@ class Command(BaseCommand):
         self.stdout.write(f"Found {total} packages")
 
         for package in packages:
-            code = package.get("package_code")
+            code = package.get("package_code") or package.get("package_id")
             image_url = package.get("image_url", "")
             if image_url and image_url.startswith("http"):
                 self.stdout.write(f"{code} -> already has image, skipped")
+                continue
+            if not code:
+                self.stdout.write("Package missing code; skipped")
                 continue
 
             category = package.get("category", "LODGING")
