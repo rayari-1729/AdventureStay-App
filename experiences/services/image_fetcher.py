@@ -10,26 +10,28 @@ import requests
 
 CATEGORY_IMAGES: Dict[str, List[str]] = {
     "TREKKING": [
+        "https://images.unsplash.com/photo-1551632811-561732d1e306",
         "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
         "https://images.unsplash.com/photo-1470246973918-29a93221c455",
         "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-        "https://images.unsplash.com/photo-1500534314213-953f6b26f1fb",
-        "https://images.unsplash.com/photo-1500534314212-42a733f6f311",
-        "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
+        "https://images.unsplash.com/photo-1578592391689-0e3d1a1b52b9",
+        "https://images.unsplash.com/photo-1747276740098-dc16d562966e",
+        "https://images.unsplash.com/photo-1747276740098-dc16d562966e",
     ],
     "HILLS_STAYCATION": [
         "https://images.unsplash.com/photo-1505691938895-1758d7feb511",
         "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a",
-        "https://images.unsplash.com/photo-1505691938895-a617b73a8dbd",
-        "https://images.unsplash.com/photo-1505691723518-36a1a2ef3608",
+        "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800",
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
         "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
     ],
     "JUNGLE_SAFARI": [
         "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
         "https://images.unsplash.com/photo-1456926631375-92c8ce872def",
         "https://images.unsplash.com/photo-1430026996702-608b84ce9281",
         "https://images.unsplash.com/photo-1470770841072-f978cf4d019e",
+        "https://images.unsplash.com/photo-1441974231531-c6227db76b6e"
     ],
     "LODGING": [
         "https://images.unsplash.com/photo-1505691938895-1758d7feb511",
