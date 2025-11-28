@@ -64,6 +64,44 @@ python manage.py verify_aws_booking_pipeline
 
 The command is safe to run locally (it respects `USE_AWS`) and is handy for Cloud9/EC2 smoke tests once environment variables are configured.
 
+## Lambda Thumbnail Pipeline
+
+Package images uploaded to `packages/` can be post-processed by an AWS Lambda function that generates thumbnails and writes them back to S3/DynamoDB. The code lives under `lambda_functions/image_processor.py` with infrastructure defined in `infra/lambda_image_processor.yaml`.
+
+Deploy workflow from Cloud9 (requires Pillow bundled into the deployment zip or a Lambda layer):
+
+```bash
+# 1. Package the Lambda code (include dependencies under site-packages/)
+mkdir -p build/image_processor
+cp lambda_functions/image_processor.py build/image_processor/
+# cp -r vendor/PIL build/image_processor/  # if bundling Pillow
+cd build/image_processor
+zip -r ../image_processor.zip .
+
+# 2. Upload to an S3 bucket used for CloudFormation packages
+aws s3 cp ../image_processor.zip s3://<deployment-bucket>/lambda/image_processor.zip
+
+# 3. Package the CloudFormation template
+cd ~/environment/adventurestay
+aws cloudformation package \
+  --template-file infra/lambda_image_processor.yaml \
+  --s3-bucket <deployment-bucket> \
+  --output-template-file infra/lambda_image_processor-packaged.yaml \
+  --parameter-overrides \
+      CodeS3Bucket=<deployment-bucket> \
+      CodeS3Key=lambda/image_processor.zip \
+      PackagesBucketName=<your-adventurestay-bucket> \
+      PackagesTableName=adventurestay_packages
+
+# 4. Deploy the stack
+aws cloudformation deploy \
+  --template-file infra/lambda_image_processor-packaged.yaml \
+  --stack-name adventurestay-image-processor \
+  --capabilities CAPABILITY_IAM
+```
+
+After deployment, every new object under `packages/` triggers the Lambda, which writes a thumbnail to `thumbnails/` and updates the DynamoDB item with `thumbnail_key`.
+
 ## Deployment Notes
 
 - The project is cloud-ready: set `USE_AWS=1` and configure the DynamoDB table, SQS queue, SNS topic, and S3 bucket listed above (IAM role permissions required).
