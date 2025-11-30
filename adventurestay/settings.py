@@ -31,14 +31,19 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-change-me")
 DEBUG = os.getenv("DEBUG", "1") == "1"
 
 # ALLOWED_HOSTS = [host for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if host]
+# ALLOWED_HOSTS = [
+#     "127.0.0.1",
+#     "localhost",
+#     "4bc03b3b97474215bce2c89b5327e9e4.vfs.cloud9.us-east-1.amazonaws.com",
+#     "adventurestay-env.eba-g8papemp.us-east-1.elasticbeanstalk.com",
+#     ".elasticbeanstalk.com"
+# ]
 ALLOWED_HOSTS = [
-    # "localhost",
-    # "127.0.0.1",
-    # "0.0.0.0",
-    # "4bc03b3b97474215bce2c89b5327e9e4.vfs.cloud9.us-east-1.amazonaws.com",
-    # generic EB host
-    ".elasticbeanstalk.com"
+    "*",
 ]
+
+
+
 
 CSRF_TRUSTED_ORIGINS = [
     "https://4bc03b3b97474215bce2c89b5327e9e4.vfs.cloud9.us-east-1.amazonaws.com",
@@ -136,9 +141,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 # STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
