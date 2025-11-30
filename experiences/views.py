@@ -27,15 +27,25 @@ CATEGORY_DESCRIPTIONS = {
 }
 
 
+# def home(request):
+#     return render(
+#         request,
+#         "experiences/home.html",
+#         {
+#             "title": "AdventureStay",
+#             "aws_enabled": aws_enabled(),
+#         },
+#     )
+
 def home(request):
     return render(
         request,
         "experiences/home.html",
         {
             "title": "AdventureStay",
-            "aws_enabled": aws_enabled(),
         },
     )
+
 
 
 def package_list(request):
