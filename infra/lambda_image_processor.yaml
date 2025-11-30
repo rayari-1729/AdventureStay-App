@@ -4,18 +4,16 @@ Description: Lambda thumbnail generator for AdventureStay package images.
 Parameters:
   CodeS3Bucket:
     Type: String
-    Description: Bucket containing the Lambda deployment package zip.
   CodeS3Key:
     Type: String
-    Description: Key of the Lambda deployment package zip.
   PackagesBucketName:
     Type: String
-    Description: S3 bucket that stores AdventureStay package images.
   PackagesTableName:
     Type: String
     Default: adventurestay_packages
 
 Resources:
+
   ImageProcessorRole:
     Type: AWS::IAM::Role
     Properties:
@@ -26,17 +24,11 @@ Resources:
             Principal:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
+
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
       Policies:
-        - PolicyName: LambdaLogging
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: arn:aws:logs:*:*:*
         - PolicyName: S3Access
           PolicyDocument:
             Version: "2012-10-17"
@@ -48,6 +40,7 @@ Resources:
                 Resource:
                   - !Sub arn:aws:s3:::${PackagesBucketName}/packages/*
                   - !Sub arn:aws:s3:::${PackagesBucketName}/thumbnails/*
+
         - PolicyName: DynamoAccess
           PolicyDocument:
             Version: "2012-10-17"
@@ -82,26 +75,22 @@ Resources:
       Principal: s3.amazonaws.com
       SourceArn: !Sub arn:aws:s3:::${PackagesBucketName}
 
-  PackageUploadNotification:
-    Type: AWS::S3::BucketNotification
-    Properties:
-      Bucket: !Ref PackagesBucketName
-      NotificationConfiguration:
-        LambdaConfigurations:
-          - Event: "s3:ObjectCreated:*"
-            Filter:
-              S3Key:
-                Rules:
-                  - Name: prefix
-                    Value: packages/
-            Function: !GetAtt ImageProcessorFunction.Arn
-    DependsOn:
-      - ImageProcessorPermission
+  # PackageUploadNotification:
+  #   Type: AWS::S3::BucketNotification
+  #   Properties:
+  #     Bucket: !Ref PackagesBucketName
+  #     NotificationConfiguration:
+  #       LambdaConfigurations:
+  #         - Event: "s3:ObjectCreated:*"
+  #           Filter:
+  #             S3Key:
+  #               Rules:
+  #                 - Name: prefix
+  #                   Value: packages/
+  #           Function: !GetAtt ImageProcessorFunction.Arn
+  #   DependsOn:
+  #     - ImageProcessorPermission
 
 Outputs:
   LambdaFunctionName:
     Value: !Ref ImageProcessorFunction
-    Description: Thumbnail generator Lambda function.
-  PackagesBucket:
-    Value: !Ref PackagesBucketName
-    Description: Bucket monitored for package uploads.

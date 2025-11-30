@@ -1,7 +1,4 @@
-"""AWS Lambda function to generate thumbnails for AdventureStay package images."""
-
-from __future__ import annotations
-
+import json
 import io
 import logging
 import os
@@ -22,8 +19,6 @@ THUMB_WIDTH = int(os.getenv("THUMBNAIL_WIDTH", "300"))
 
 
 def handler(event: Dict[str, Any], _context) -> None:
-    """Lambda entry point triggered by S3 object-created events."""
-
     logger.info("Received event: %s", event)
 
     for record in event.get("Records", []):
@@ -36,46 +31,49 @@ def handler(event: Dict[str, Any], _context) -> None:
 
         try:
             _process_image(bucket, key)
-        except Exception:  # pragma: no cover - defensive logging
+        except Exception:
             logger.exception("Failed to process %s/%s", bucket, key)
 
 
 def _process_image(bucket: str, key: str) -> None:
-    """Generate thumbnail for the given S3 object and update DynamoDB."""
-
     logger.info("Processing s3://%s/%s", bucket, key)
+
+    # download
     original = s3.get_object(Bucket=bucket, Key=key)
     image_bytes = original["Body"].read()
 
+    # create thumb
     thumb_bytes = _create_thumbnail(image_bytes)
     thumb_key = f"{THUMB_PREFIX}{os.path.basename(key)}"
 
+    # upload (NO ACL!)
     s3.put_object(
         Bucket=bucket,
         Key=thumb_key,
         Body=thumb_bytes,
         ContentType="image/jpeg",
-        ACL="public-read",
     )
     logger.info("Uploaded thumbnail to s3://%s/%s", bucket, thumb_key)
 
-    package_code = os.path.splitext(os.path.basename(key))[0].upper()
+    # extract package_code TREK-001 from trek-001-abc123.jpg
+    base = os.path.basename(key).split("-")[0:2]
+    package_code = "-".join(base).upper()
+
+    # update DynamoDB
     if package_code and DDB_TABLE:
         table = dynamodb.Table(DDB_TABLE)
         table.update_item(
-            Key={"package_id": package_code},
+            Key={"package_code": package_code},
             UpdateExpression="SET thumbnail_key = :thumb",
             ExpressionAttributeValues={":thumb": thumb_key},
         )
-        logger.info("Updated DynamoDB package %s with thumbnail %s", package_code, thumb_key)
+        logger.info("Updated DynamoDB %s thumbnail %s", package_code, thumb_key)
 
 
 def _create_thumbnail(image_bytes: bytes) -> bytes:
-    """Resize image to desired width while keeping aspect ratio."""
-
     with Image.open(io.BytesIO(image_bytes)) as img:
         img = img.convert("RGB")
-        img.thumbnail((THUMB_WIDTH, THUMB_WIDTH * 10_000), Image.LANCZOS)
+        img.thumbnail((THUMB_WIDTH, THUMB_WIDTH * 10000), Image.LANCZOS)
         buffer = io.BytesIO()
         img.save(buffer, format="JPEG", quality=85)
         buffer.seek(0)

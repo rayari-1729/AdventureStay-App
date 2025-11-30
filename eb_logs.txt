@@ -1,0 +1,4 @@
+Retrieving logs...
+Logs were saved to /home/ec2-user/environment/adventurestay/.elasticbeanstalk/logs/251130_151040
+Logs were saved to /home/ec2-user/environment/adventurestay/.elasticbeanstalk/logs/251130_151040
+Updated symlink at /home/ec2-user/environment/adventurestay/.elasticbeanstalk/logs/latest
