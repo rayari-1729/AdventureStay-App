@@ -15,7 +15,7 @@
     </p>
     <div class="hero-actions">
       <a href="{% url 'experiences:package_list' %}" class="btn btn-premium">Browse &amp; Book Adventures</a>
-      <span class="status-pill">Cloud Integrations: {{ aws_enabled|yesno:"Enabled,Disabled" }}</span>
+     
     </div>
   </div>
   <div class="home-hero__visual" role="presentation"></div>
@@ -52,35 +52,8 @@
 </section>
 
 <!-- Why choose AdventureStay section -->
-<section class="home-section">
-  <div class="section-heading">
-    <h2>Why Choose AdventureStay?</h2>
-    <p>Built for cloud-native operations without compromising on the experience.</p>
-  </div>
-  <div class="card-grid highlight-grid">
-    <article class="highlight-card">
-      <h3>Real-time availability</h3>
-      <p>PackageAvailabilityChecker ensures overlapping bookings never slip through.</p>
-    </article>
-    <article class="highlight-card">
-      <h3>Smart pricing engine</h3>
-      <p>Weekend surcharges and seasonal multipliers baked into every quote.</p>
-    </article>
-    <article class="highlight-card">
-      <h3>AWS-ready workflows</h3>
-      <p>DynamoDB, SQS, and SNS hooks fire post-booking without blocking the UI.</p>
-    </article>
-    <article class="highlight-card">
-      <h3>Curated adventure packages</h3>
-      <p>20+ handcrafted stays seeded with vivid imagery and domain metadata.</p>
-    </article>
-  </div>
-</section>
+
 
 <!-- Footer -->
-<footer class="home-footer">
-  <p>&copy; {% now "Y" %} AdventureStay. All rights reserved.</p>
-  <p>Cloud Integrations: <strong>{{ aws_enabled|yesno:"Enabled,Disabled" }}</strong></p>
-  <p>Need help? <a href="mailto:hello@adventurestay.example.com">Contact Support</a></p>
-</footer>
+
 {% endblock %}
