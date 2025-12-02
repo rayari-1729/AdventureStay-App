@@ -140,17 +140,38 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [BASE_DIR / 'static']
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # AWS / Cloud configuration
-USE_AWS = os.getenv("USE_AWS", "0") == "1"
-AWS_REGION = os.getenv("AWS_DEFAULT_REGION", os.getenv("AWS_REGION", "ap-south-1"))
-DDB_BOOKINGS_TABLE_NAME = os.getenv("DDB_BOOKINGS_TABLE_NAME", "")
-DDB_PACKAGES_TABLE_NAME = os.getenv("DDB_PACKAGES_TABLE_NAME", "")
+# USE_AWS = os.getenv("USE_AWS", "0") == "1"
+# AWS_REGION = os.getenv("AWS_DEFAULT_REGION", os.getenv("AWS_REGION", "ap-south-1"))
+# DDB_BOOKINGS_TABLE_NAME = os.getenv("DDB_BOOKINGS_TABLE_NAME", "")
+# DDB_PACKAGES_TABLE_NAME = os.getenv("DDB_PACKAGES_TABLE_NAME", "")
+# S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME", "")
+# SQS_BOOKING_QUEUE_URL = os.getenv("SQS_BOOKING_QUEUE_URL", "")
+# SNS_BOOKING_TOPIC_ARN = os.getenv("SNS_BOOKING_TOPIC_ARN", "")
+
+
+
+##============= for eb ==================
+# AWS / Cloud configuration
+# Default to using AWS in EB/Cloud9 unless explicitly disabled
+USE_AWS = os.getenv("USE_AWS", "1") == "1"
+
+AWS_REGION = os.getenv(
+    "AWS_DEFAULT_REGION",
+    os.getenv("AWS_REGION", "ap-south-1"),
+)
+
+# Fallback to real DynamoDB table names if env vars are missing (like on EB)
+DDB_BOOKINGS_TABLE_NAME = os.getenv("DDB_BOOKINGS_TABLE_NAME", "adventurestay_bookings")
+DDB_PACKAGES_TABLE_NAME = os.getenv("DDB_PACKAGES_TABLE_NAME", "adventurestay_packages")
+
+# You can keep these empty or also give safe defaults if you want
 S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME", "")
 SQS_BOOKING_QUEUE_URL = os.getenv("SQS_BOOKING_QUEUE_URL", "")
 SNS_BOOKING_TOPIC_ARN = os.getenv("SNS_BOOKING_TOPIC_ARN", "")

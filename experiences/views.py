@@ -70,12 +70,15 @@ def package_list(request):
                 "packages": cards,
             }
         )
+        
+    print(sections)  ## rayari 
 
     return render(
         request,
         "experiences/package_list.html",
         {"sections": sections},
     )
+
 
 
 def booking_form(request, package_code: str):
