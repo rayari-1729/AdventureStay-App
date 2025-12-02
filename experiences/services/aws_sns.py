@@ -15,6 +15,15 @@ from . import aws_enabled, log_local_fallback
 logger = logging.getLogger(__name__)
 
 
+# def get_sns_client():
+#     if not aws_enabled():
+#         log_local_fallback("sns")
+#         return None
+
+#     # region = getattr(settings, "AWS_REGION", None)
+#     region = getattr(settings, "AWS_REGION", None) or getattr(settings, "AWS_DEFAULT_REGION", "us-east-1")
+#     return boto3.client("sns", region_name=region)
+
 def get_sns_client():
     if not aws_enabled():
         log_local_fallback("sns")
@@ -22,6 +31,7 @@ def get_sns_client():
 
     region = getattr(settings, "AWS_REGION", None)
     return boto3.client("sns", region_name=region)
+
 
 
 def publish_booking_confirmation(booking: AdventureBookingModel) -> None:

@@ -262,7 +262,7 @@ def aws_enabled() -> bool:
 
 
 def main() -> None:
-    table_name = os.getenv("DDB_PACKAGES_TABLE_NAME", "adventurestay_packages")
+    table_name = os.getenv("DDB_PACKAGES_TABLE_NAME", "adventurestay_bookings")
     region = os.getenv("AWS_DEFAULT_REGION", "us-east-1")
 
     if not aws_enabled():
